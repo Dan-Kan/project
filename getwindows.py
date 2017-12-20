@@ -1,17 +1,17 @@
 import subprocess
 import re
 
-#Runs shell command to get all windows open
+# Runs shell command to get all windows open
 command = ["wmctrl -lG", "|", "awk ", "'{$2=""; $1=""; print $0}'"]
 lines = subprocess.getoutput(command).split("\n")
 
-#Adds windows to list
+# Adds windows to list
 windows = []
 for line in lines:
     line = line.replace("  ", " ")
     windows.append(line.split(" ", 2))
 
-#Extracts only the x,y,height,width and name of all windows and prints them
+# Extracts only the x,y,height,width and name of all windows and prints them
 for win in windows:
     wininfo = win[2]
     speclist = wininfo.split()
@@ -32,7 +32,9 @@ where string is a substring of the window's title, (left,up) are the desired scr
 and (width,height) are the desired window's dimensions.
 '''
 
-#Resize a window by name (not all that reliable, should do it by window ID, but eh)
+# Resize a window by name (not all that reliable, should do it by window ID, but eh)
+
+
 def resize_window(win_name, left, up, width, height):
     cmd = "wmctrl -r ", win_name, " -e 0,", left, ",", up, ",", width, ",", height
     cmd = "".join(cmd)
