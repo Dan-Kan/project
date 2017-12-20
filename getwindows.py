@@ -42,5 +42,3 @@ def resize_window(win_name, left, up, width, height):
     process = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
     process.wait()
 
-
-resize_window("dan@dan-manjaro:~", "200", "200", "20", "20")
