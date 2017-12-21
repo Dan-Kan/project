@@ -1,5 +1,7 @@
 import subprocess
 import re
+from flask import Flask, Response
+import requests
 
 # Runs shell command to get all windows open
 command = ["wmctrl -lG", "|", "awk ", "'{$2=""; $1=""; print $0}'"]
@@ -11,18 +13,22 @@ for line in lines:
     line = line.replace("  ", " ")
     windows.append(line.split(" ", 2))
 
-# Extracts only the x,y,height,width and name of all windows and prints them
-for win in windows:
-    wininfo = win[2]
-    speclist = wininfo.split()
-    x = speclist[0]
-    y = speclist[1]
-    width = speclist[2]
-    height = speclist[3]
-    machine_name = speclist[4]
-    window_name = " ".join(speclist[5:])
-    print("Window name: ", window_name, "X: ", x,
-          "Y:", "Width: ", width, "Height: ", height)
+def print_windows(windows):
+    # Extracts only the x,y,height,width and name of all windows and prints them
+    ret_list = []
+    for win in windows:
+        wininfo = win[2]
+        speclist = wininfo.split()
+        x = speclist[0]
+        y = speclist[1]
+        width = speclist[2]
+        height = speclist[3]
+        machine_name = speclist[4]
+        window_name = " ".join(speclist[5:])
+        str = "Window name: ", window_name, "X: ", x, "Y:", "Width: ", width, "Height: ", height
+        print(str)
+        ret_list.append(str)
+    return ret_list
 
 '''
 To resize a window:
@@ -42,3 +48,6 @@ def resize_window(win_name, left, up, width, height):
     process = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
     process.wait()
 
+windowlist = print_windows(windows)
+
+r = requests.post("http://127.0.0.1:5000", json=windowlist)
