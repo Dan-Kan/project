@@ -2,6 +2,7 @@ import subprocess
 import re
 from flask import Flask, Response
 import requests
+import json
 
 # Runs shell command to get all windows open
 command = ["wmctrl -lG", "|", "awk ", "'{$2=""; $1=""; print $0}'"]
@@ -13,8 +14,10 @@ for line in lines:
     line = line.replace("  ", " ")
     windows.append(line.split(" ", 2))
 
+
 def print_windows(windows):
     # Extracts only the x,y,height,width and name of all windows and prints them
+    # TODO: TURN INTO JSON
     ret_list = []
     for win in windows:
         wininfo = win[2]
@@ -25,10 +28,11 @@ def print_windows(windows):
         height = speclist[3]
         machine_name = speclist[4]
         window_name = " ".join(speclist[5:])
-        str = "Window name: ", window_name, "X: ", x, "Y:", "Width: ", width, "Height: ", height
-        print(str)
-        ret_list.append(str)
-    return ret_list
+        s = {"Window name": window_name, "X": x, "Y": y, "Width": width, "Height": height}
+        print(s)
+        ret_list.append(s)
+    return json.dumps(ret_list)
+
 
 '''
 To resize a window:
@@ -48,6 +52,10 @@ def resize_window(win_name, left, up, width, height):
     process = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
     process.wait()
 
-windowlist = print_windows(windows)
 
-r = requests.post("http://127.0.0.1:5000", json=windowlist)
+windowlist = print_windows(windows)
+print()
+print()
+
+headers = {'Content-Type': 'application/json'}
+r = requests.post("http://127.0.0.1:5000", headers=headers, json=windowlist)
