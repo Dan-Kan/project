@@ -1,7 +1,8 @@
-from flask import Flask, Response, request, jsonify
+from flask import Flask, Response, request, render_template
 import json
 
 app = Flask(__name__)
+
 
 @app.route("/", methods=['POST', 'GET'])
 def get_data():
@@ -17,8 +18,7 @@ def get_json():
     print("IN /json")
     print()
     if(client_json):
-        print(client_json)
-        return client_json
+        return render_template("windowtable.html", window_list=json.loads(client_json))
     else:
         return "DIDNT GET JSON"
 
