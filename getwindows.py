@@ -5,6 +5,7 @@ import requests
 import json
 
 # Runs shell command to get all windows open
+# THE X AND Y NUMBERS ARE THE COMBINATION OF xwininfo ABSOLUTE AND RELATIVE
 command = ["wmctrl -lG", "|", "awk ", "'{$2=""; $1=""; print $0}'"]
 lines = subprocess.getoutput(command).split("\n")
 
