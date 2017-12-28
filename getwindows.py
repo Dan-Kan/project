@@ -1,6 +1,6 @@
 import subprocess
 import re
-from flask import Flask, Response
+from flask import Flask, Response, jsonify
 import requests
 import json
 
@@ -32,7 +32,8 @@ def print_windows(windows):
         s = {"Window name": window_name, "X": x, "Y": y, "Width": width, "Height": height}
         print(s)
         ret_list.append(s)
-    return json.dumps(ret_list)
+    ret_dict = {"Windows" : ret_list}
+    return json.dumps(ret_dict)
 
 
 '''
@@ -57,6 +58,6 @@ def resize_window(win_name, left, up, width, height):
 windowlist = print_windows(windows)
 print()
 print()
-
+print(windowlist)
 headers = {'Content-Type': 'application/json'}
 r = requests.post("http://127.0.0.1:5000", headers=headers, json=windowlist)

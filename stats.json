@@ -1,0 +1,10 @@
+{
+    "Windows":{
+        "comment" : "HERE GOES ALL THE WINDOWS FROM getwindows.py"
+    },
+
+    "Disks":{
+        "comment" : "HERE GOES ALL THE DISKS FROM disk_status.py"
+    }
+
+}
