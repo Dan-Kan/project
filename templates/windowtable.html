@@ -1,10 +1,23 @@
 <!DOCTYPE html>
 <table border="1">
-    {% for windict in window_list %}
+    {% for windict in window_list["Windows"] %}
         {% for key, value in windict.items() %}
         <tr>
                 <th> {{ key }} </th>
                 <td> {{ value }} </td>
+        </tr>
+        {% endfor %}
+    {% endfor %}
+</table>
+
+<hr>
+
+<table border="1">
+    {% for windict in window_list["Disks"] %}
+        {% for key, value in windict.items() %}
+        <tr>
+            <th> {{ key }} </th>
+            <td> {{ value }} </td>
         </tr>
         {% endfor %}
     {% endfor %}

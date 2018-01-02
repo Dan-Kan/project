@@ -33,7 +33,8 @@ def print_windows(windows):
         print(s)
         ret_list.append(s)
     ret_dict = {"Windows" : ret_list}
-    return json.dumps(ret_dict)
+    return ret_dict
+    #return json.dumps(ret_dict)
 
 
 '''
@@ -59,5 +60,13 @@ windowlist = print_windows(windows)
 print()
 print()
 print(windowlist)
-headers = {'Content-Type': 'application/json'}
-r = requests.post("http://127.0.0.1:5000", headers=headers, json=windowlist)
+
+with open("stats.json", "r+") as f:
+    systats = json.load(f)
+    # update json here
+    systats["Windows"] = print_windows(windows)["Windows"]
+    f.seek(0)
+    f.truncate()
+    json.dump(systats, f)
+#headers = {'Content-Type': 'application/json'}
+#r = requests.post("http://127.0.0.1:5000", headers=headers, json=windowlist)

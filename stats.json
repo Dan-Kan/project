@@ -1,10 +1,1 @@
-{
-    "Windows":{
-        "comment" : "HERE GOES ALL THE WINDOWS FROM getwindows.py"
-    },
-
-    "Disks":{
-        "comment" : "HERE GOES ALL THE DISKS FROM disk_status.py"
-    }
-
-}
+{"Disks": [{"Device": "/dev/sda1", "Disk size": "9.8G", "Used": "6.1G", "Free": "3.1G", "Percent used": 66, "fstype": "ext4", "Mount point": "/"}], "Windows": [{"Window name": "budgie-panel", "X": "0", "Y": "0", "Width": "1920", "Height": "39"}, {"Window name": "plank", "X": "0", "Y": "0", "Width": "93", "Height": "975"}, {"Window name": "Desktop", "X": "0", "Y": "0", "Width": "1920", "Height": "975"}, {"Window name": "windowtable.html - project - Visual Studio Code", "X": "1", "Y": "91", "Width": "1920", "Height": "913"}, {"Window name": "Tilix: Default", "X": "12", "Y": "96", "Width": "768", "Height": "552"}, {"Window name": "localhost:5000/win - Chromium", "X": "1", "Y": "91", "Width": "1920", "Height": "913"}, {"Window name": "Untitled 1 - LibreOffice Writer", "X": "1", "Y": "91", "Width": "1920", "Height": "913"}]}

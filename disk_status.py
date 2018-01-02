@@ -47,8 +47,23 @@ def get_disks():
                      "Mount point": part.mountpoint}
         disk_list.append(disk_info)
     ret_dict = {"Disks" : disk_list}
-    return json.dumps(ret_dict)
+    return ret_dict
+
+'''
+with open('stats.json', 'w') as outfile:
+    json.dump({"Disks": get_disks()}, outfile)
+'''
+
+with open("stats.json", "r+") as f:
+    systats = json.load(f)
+    # update json here
+    systats["Disks"] = get_disks()["Disks"]
+    f.seek(0)
+    f.truncate()
+    json.dump(systats, f)
 
 
+'''
 headers = {'Content-Type': 'application/json'}
 r = requests.post("http://127.0.0.1:5000", headers=headers, json=get_disks())
+'''

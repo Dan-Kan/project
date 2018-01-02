@@ -5,6 +5,7 @@ app = Flask(__name__)
 
 client_json = ""
 
+
 def merge_json(jwin, jdisks):
     combined = json.dumps(jwin + jdisks)
     print(combined)
@@ -29,15 +30,14 @@ def get_data():
 def get_json():
     print("IN /win")
     print()
-    if(client_json):
-        return render_template("windowtable.html", window_list=json.loads(client_json))
-    else:
-        return "DIDNT GET JSON"
+    f = json.load(open("stats.json", "r"))
+    return render_template("windowtable.html", window_list=f)
 
 
-'''
-@app.route("/disks", methods=['POST', 'GET'])
-def
-'''
+
+
+
+#@app.route("/disks", methods=['POST', 'GET'])
+# def
 if __name__ == '__main__':
     app.run(debug=True)
