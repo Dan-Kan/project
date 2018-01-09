@@ -33,6 +33,11 @@ def get_json():
     f = json.load(open("stats.json", "r"))
     return render_template("windowtable.html", window_list=f)
 
+@app.route("/draw", methods=['POST', 'GET'])
+def draw_windows():
+    f = json.load(open("stats.json", "r"))
+    return render_template("drawin.html", window_list=f)
+
 
 
 
