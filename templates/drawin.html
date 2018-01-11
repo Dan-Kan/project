@@ -13,14 +13,18 @@
             // Set colors
             fill(255, 255, 255, 127);
             strokeWeight(4);
-            stroke(51);
+            stroke(20);
             tint(127);
             colorMode(RGB, 255, 255, 255, 1)
+
+            //Set text
+            textSize(10)
         }
 
         function draw() {
             for (let i = 0; i < windows.length; i++) {
                 rect(Number(windows[i].X), Number(windows[i].Y), Number(windows[i].Width), Number(windows[i].Height));
+                text(windows[i].Window_name, Number(windows[i].X + 100), Number(windows[i].Y - -100), [Number(windows[i].Width)], [Number(windows[i].Height)]);
             }
 
         }
