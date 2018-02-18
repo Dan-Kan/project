@@ -1,4 +1,4 @@
-from flask import Flask, Response, request, render_template
+from flask import Flask, Response, request, render_template, jsonify
 import json
 
 app = Flask(__name__)
@@ -32,6 +32,15 @@ def get_json():
     print()
     f = json.load(open("stats.json", "r"))
     return render_template("windowtable.html", window_list=f)
+
+@app.route("/jstats", methods=['POST', 'GET'])
+def ret_json():
+    f = json.load(open("stats.json", "r"))
+    return jsonify(f)
+
+@app.route("/live", methods=['POST', 'GET'])
+def live_test():
+    return render_template("liveupdate.html")
 
 @app.route("/draw", methods=['POST', 'GET'])
 def draw_windows():
