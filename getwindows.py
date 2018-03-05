@@ -61,12 +61,22 @@ print()
 print()
 print(windowlist)
 
-with open("stats.json", "r+") as f:
-    systats = json.load(f)
-    # update json here
-    systats["Windows"] = print_windows(windows)["Windows"]
-    f.seek(0)
-    f.truncate()
-    json.dump(systats, f)
+def window_runner():
+    command = ["wmctrl -lG", "|", "awk ", "'{$2=""; $1=""; print $0}'"]
+    lines = subprocess.getoutput(command).split("\n")
+
+    # Adds windows to list
+    windows = []
+    for line in lines:
+        line = line.replace("  ", " ")
+        windows.append(line.split(" ", 2))
+        
+    with open("stats.json", "r+") as f:
+        systats = json.load(f)
+        # update json here
+        systats["Windows"] = print_windows(windows)["Windows"]
+        f.seek(0)
+        f.truncate()
+        json.dump(systats, f)
 #headers = {'Content-Type': 'application/json'}
 #r = requests.post("http://127.0.0.1:5000", headers=headers, json=windowlist)

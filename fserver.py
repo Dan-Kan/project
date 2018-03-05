@@ -1,9 +1,24 @@
 from flask import Flask, Response, request, render_template, jsonify
 import json
+import threading
+from disk_status import disk_runner
+from getwindows import window_runner
+import time
+from threading import Thread
+
+def update_stats():
+  while 1:
+    window_runner()
+    disk_runner()
+    time.sleep(2)
+
 
 app = Flask(__name__)
 
 client_json = ""
+
+thread = Thread(target = update_stats, args = ( ))
+thread.start()
 
 
 def merge_json(jwin, jdisks):

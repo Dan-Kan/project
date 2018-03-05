@@ -53,14 +53,24 @@ def get_disks():
 with open('stats.json', 'w') as outfile:
     json.dump({"Disks": get_disks()}, outfile)
 '''
+def write():
+    with open("stats.json", "r+") as f:
+        systats = json.load(f)
+        # update json here
+        systats["Disks"] = get_disks()["Disks"]
+        f.seek(0)
+        f.truncate()
+        json.dump(systats, f)
 
-with open("stats.json", "r+") as f:
-    systats = json.load(f)
-    # update json here
-    systats["Disks"] = get_disks()["Disks"]
-    f.seek(0)
-    f.truncate()
-    json.dump(systats, f)
+def disk_runner():
+    get_disks()
+    with open("stats.json", "r+") as f:
+        systats = json.load(f)
+        # update json here
+        systats["Disks"] = get_disks()["Disks"]
+        f.seek(0)
+        f.truncate()
+        json.dump(systats, f)
 
 
 '''

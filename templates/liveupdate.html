@@ -1,32 +1,149 @@
 <body>
-    <table id="table" border="1">
-
+    <table id="mega_table">
+        <tr>
+            <tr>
+                <th>Windows</th>
+                <th>Disks</th>
+            </tr>
+            <td valign="top">
+                <table id="window_table" border="1"></table>
+            </td>
+            <td valign="top">
+                <table id="disk_table" border="1"></table>
+            </td>
+            <td>
+                <h1>TESTESTESTES</h1>
+            </td>
+        </tr>
     </table>
+
+
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
     <script>
         $(document).ready(function () {
             $SCRIPT_ROOT = {{ request.script_root | tojson | safe }};
+
         console.log($SCRIPT_ROOT)
-        function updateTable() {
-            $("#table").empty();
+        function updateWinTable() {
+            $("#window_table").empty();
             $.getJSON($SCRIPT_ROOT + "/jstats", function (data) {
-                console.log(data)
+                console.log(data["Windows"])
                 var tbl_body = document.createElement("tbody");
-                $.each(data, function () {
+                $.each(data["Windows"], function (k, v) {
+                    //Start adding loop
                     var tbl_row = tbl_body.insertRow();
-                    $.each(this, function (k, v) {
-                        var cell = tbl_row.insertCell();
-                        console.log(v)
-                        cell.appendChild(document.createTextNode(v["Window_name"].toString()));
-                    })
+                    var cell = tbl_row.insertCell();
+                    cell.append("Window Name: ")
+                    var cell = tbl_row.insertCell();
+                    cell.appendChild(document.createTextNode(v["Window_name"].toString()));
+                    //End adding loop
+                    var tbl_row = tbl_body.insertRow();
+                    var cell = tbl_row.insertCell();
+                    cell.append("X: ")
+                    var cell = tbl_row.insertCell();
+                    cell.appendChild(document.createTextNode(v["X"].toString()));
+                    //Start adding loop
+                    var tbl_row = tbl_body.insertRow();
+                    var cell = tbl_row.insertCell();
+                    cell.append("Y: ")
+                    var cell = tbl_row.insertCell();
+                    cell.appendChild(document.createTextNode(v["Y"].toString()));
+                    var tbl_row = tbl_body.insertRow();
+                    var cell = tbl_row.insertCell();
+                    cell.append("Width: ")
+                    var cell = tbl_row.insertCell();
+                    cell.appendChild(document.createTextNode(v["Width"].toString()));
+                    var tbl_row = tbl_body.insertRow();
+                    var cell = tbl_row.insertCell();
+                    cell.append("Height: ")
+                    var cell = tbl_row.insertCell();
+                    cell.appendChild(document.createTextNode(v["Height"].toString()));
                 })
-                $("#table").append(tbl_body);
+
+                $("#window_table").append(tbl_body);
             });
         }
-        updateTable()
-        setInterval(updateTable, 1000);
+        function updateDiskTable() {
+            $("#disk_table").empty();
+            $.getJSON($SCRIPT_ROOT + "/jstats", function (data) {
+                //console.log(data)
+                var tbl_body = document.createElement("tbody");
+                $.each(data["Disks"], function (k, v) {
+                    //Start adding loop
+                    var tbl_row = tbl_body.insertRow();
+                    var cell = tbl_row.insertCell();
+                    cell.append("Device: ")
+                    var cell = tbl_row.insertCell();
+                    cell.appendChild(document.createTextNode(v["Device"].toString()));
+                    //End adding loop
+                    //Start adding loop
+                    console.log(v)
+                    var tbl_row = tbl_body.insertRow();
+                    var cell = tbl_row.insertCell();
+                    cell.append("Disk Size: ")
+                    var cell = tbl_row.insertCell();
+                    cell.appendChild(document.createTextNode(v["Disk size"].toString()));
+                    //Start adding loop
+                    console.log(v)
+                    var tbl_row = tbl_body.insertRow();
+                    var cell = tbl_row.insertCell();
+                    cell.append("Used: ")
+                    var cell = tbl_row.insertCell();
+                    cell.appendChild(document.createTextNode(v["Used"].toString()));
+                    //Start adding loop
+                    console.log(v)
+                    var tbl_row = tbl_body.insertRow();
+                    var cell = tbl_row.insertCell();
+                    cell.append("Free: ")
+                    var cell = tbl_row.insertCell();
+                    cell.appendChild(document.createTextNode(v["Free"].toString()));
+                    //Start adding loop
+                    console.log(v)
+                    var tbl_row = tbl_body.insertRow();
+                    var cell = tbl_row.insertCell();
+                    cell.append("Percent used: ")
+                    var cell = tbl_row.insertCell();
+                    cell.appendChild(document.createTextNode(v["Percent used"].toString()));
+                    //Start adding loop
+                    console.log(v)
+                    var tbl_row = tbl_body.insertRow();
+                    var cell = tbl_row.insertCell();
+                    cell.append("fstype: ")
+                    var cell = tbl_row.insertCell();
+                    cell.appendChild(document.createTextNode(v["fstype"].toString()));
+                    //Start adding loop
+                    console.log(v)
+                    var tbl_row = tbl_body.insertRow();
+                    var cell = tbl_row.insertCell();
+                    cell.append("Mount point: ")
+                    var cell = tbl_row.insertCell();
+                    cell.appendChild(document.createTextNode(v["Mount point"].toString()));
+
+                })
+
+                $("#disk_table").append(tbl_body);
+            });
+        }
+        updateWinTable()
+        updateDiskTable()
+        var prev = null;
+        var cur = null;
+        setInterval(function () {
+            $.getJSON($SCRIPT_ROOT + "/jstats", function (data) {
+                cur = JSON.stringify(data);
+                //console.log(cur)
+                if (prev && cur && prev !== cur) {
+                    console.log('refresh');
+                    updateWinTable();
+                    updateDiskTable();
+                }
+                prev = cur;
+            });
+        }, 1000);   
         });
+        
     </script>
 
 </body>
