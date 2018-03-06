@@ -5,6 +5,8 @@ from disk_status import disk_runner
 from getwindows import window_runner
 import time
 from threading import Thread
+import subprocess
+
 
 def update_stats():
   while 1:
@@ -55,6 +57,8 @@ def ret_json():
 
 @app.route("/live", methods=['POST', 'GET'])
 def live_test():
+    #print(subprocess.getoutput("pwd"))
+    #subprocess.call(["./", "gotty", "htop"])
     return render_template("liveupdate.html")
 
 @app.route("/draw", methods=['POST', 'GET'])
