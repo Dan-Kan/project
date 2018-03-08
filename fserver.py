@@ -3,6 +3,7 @@ import json
 import threading
 from disk_status import disk_runner
 from getwindows import window_runner
+from cpu_stats import cpu_runner
 import time
 from threading import Thread
 import subprocess
@@ -12,6 +13,7 @@ def update_stats():
   while 1:
     window_runner()
     disk_runner()
+    cpu_runner()
     time.sleep(2)
 
 
