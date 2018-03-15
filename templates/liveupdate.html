@@ -156,12 +156,12 @@
                 $("#cpu_table").append(tbl_body);
             })
             **/
-        function updateCPUTable() {
+        function updateCPUTable(points) {
             $.getJSON($SCRIPT_ROOT + "/jstats", function (data) {
                 console.log(data["CPU"][0]["CPU Percent"])
                 var canvas = document.getElementById("chartContainer");
-                var datas = {
-                    labels: ["%"],
+                var data = {
+                    labels: ["plswork"],
                     datasets: [
                         {
                             label: "CPU %",
@@ -182,31 +182,23 @@
                             pointHoverBorderWidth: 2,
                             pointRadius: 5,
                             pointHitRadius: 10,
-                            data: [data["CPU"][0]["CPU Percent"]],
+                            data: points,
                         }
                     ]
                 };
-                
-                function adddata() {
-                    myLineChart.datas.datasets[0].data.push(data["CPU"][0]["CPU Percent"]);
-                    myLineChart.datas.labels[1] = "Newly Added";
-                    myLineChart.update();
-                }
-                
+
+                var myLineChart = new Chart(canvas, {
+                    type: 'line',
+                    data: data,
+                    
+                });
+
                 
 
-                var option = {
-                    showLines: true
-                };
-                var myLineChart = Chart.Line(canvas, {
-                    data: datas,
-                    options: option
-                });
-                //adddata();
             })
         }
 
-
+        var cpoints = [];
         updateWinTable();
         updateDiskTable();
         updateCPUTable();
@@ -220,7 +212,10 @@
                     console.log('refresh');
                     updateWinTable();
                     updateDiskTable();
-                    updateCPUTable();
+                    cpoints.push(data["CPU"][0]["CPU Percent"])
+                    console.log("CPOINTS" + cpoints)
+                    updateCPUTable(cpoints);
+                    //updateCPUTable(cpoints).myLineChart.update();
                 }
                 prev = cur;
             });
