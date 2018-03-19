@@ -7,6 +7,7 @@ from cpu_stats import cpu_runner
 import time
 from threading import Thread
 import subprocess
+from top_bar import info_runner
 
 
 def update_stats():
@@ -18,6 +19,8 @@ def update_stats():
 
 
 app = Flask(__name__)
+
+info_runner()
 
 client_json = ""
 

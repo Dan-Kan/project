@@ -1,21 +1,22 @@
 <body>
     <table id="mega_table">
         <tr>
-            <tr>
-                <th>Windows</th>
-                <th>Disks</th>
-                <th>HTOP</th>
-            </tr>
-            <td valign="top">
-                <table id="window_table" border="1"></table>
-            </td>
-            <td valign="top">
-                <table id="disk_table" border="1"></table>
-            </td>
-            <td valign="top">
-                <iframe src="http://127.0.0.1:8080/" height="500" width="900"></iframe>
-                <canvas id="chartContainer" style="height: 370px; width:800px;"></canvas>
-            </td>
+            <div id="top_bar"></div>
+            <th>Windows</th>
+            <th>Disks</th>
+            <th>HTOP</th>
+        </tr>
+
+        <td valign="top">
+            <iframe src="http://127.0.0.1:8080/" height="500" width="900"></iframe>
+            <canvas id="chartContainer" style="height: 370px; width:800px;"></canvas>
+        </td>
+        <td valign="top">
+            <table id="window_table" border="1"></table>
+        </td>
+        <td valign="top">
+            <table id="disk_table" border="1"></table>
+        </td>
         </tr>
     </table>
 
@@ -23,174 +24,27 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js"></script>
+    <script type="text/javascript" src="{{url_for('static', filename='js/updateTables.js')}}"></script>
+
+    <script> <!--takes care of top bar-->
+        $(document).ready(function () {
+            $SCRIPT_ROOT = {{ request.script_root | tojson | safe }};
+
+
+        $.getJSON($SCRIPT_ROOT + "/jstats", function (data) {
+            cur = JSON.stringify(data);
+            console.log(data["MACHINE_INFO"])
+            $("#top_bar").text(data["MACHINE_INFO"] + " | IP: " + data["IP_ADDR"]);
+        });
+    });
+
+    </script>
+
 
     <script>
         $(document).ready(function () {
             $SCRIPT_ROOT = {{ request.script_root | tojson | safe }};
 
-        console.log($SCRIPT_ROOT)
-        function updateWinTable() {
-            $("#window_table").empty();
-            $.getJSON($SCRIPT_ROOT + "/jstats", function (data) {
-                console.log(data["Windows"])
-                var tbl_body = document.createElement("tbody");
-                $.each(data["Windows"], function (k, v) {
-                    //Start adding loop
-                    var tbl_row = tbl_body.insertRow();
-                    var cell = tbl_row.insertCell();
-                    cell.append("Window Name: ")
-                    var cell = tbl_row.insertCell();
-                    cell.appendChild(document.createTextNode(v["Window_name"].toString()));
-                    //End adding loop
-                    var tbl_row = tbl_body.insertRow();
-                    var cell = tbl_row.insertCell();
-                    cell.append("X: ")
-                    var cell = tbl_row.insertCell();
-                    cell.appendChild(document.createTextNode(v["X"].toString()));
-                    //Start adding loop
-                    var tbl_row = tbl_body.insertRow();
-                    var cell = tbl_row.insertCell();
-                    cell.append("Y: ")
-                    var cell = tbl_row.insertCell();
-                    cell.appendChild(document.createTextNode(v["Y"].toString()));
-                    var tbl_row = tbl_body.insertRow();
-                    var cell = tbl_row.insertCell();
-                    cell.append("Width: ")
-                    var cell = tbl_row.insertCell();
-                    cell.appendChild(document.createTextNode(v["Width"].toString()));
-                    var tbl_row = tbl_body.insertRow();
-                    var cell = tbl_row.insertCell();
-                    cell.append("Height: ")
-                    var cell = tbl_row.insertCell();
-                    cell.appendChild(document.createTextNode(v["Height"].toString()));
-                })
-
-                $("#window_table").append(tbl_body);
-            });
-        }
-        function updateDiskTable() {
-            $("#disk_table").empty();
-            $.getJSON($SCRIPT_ROOT + "/jstats", function (data) {
-                //console.log(data)
-                var tbl_body = document.createElement("tbody");
-                $.each(data["Disks"], function (k, v) {
-                    //Start adding loop
-                    var tbl_row = tbl_body.insertRow();
-                    var cell = tbl_row.insertCell();
-                    cell.append("Device: ")
-                    var cell = tbl_row.insertCell();
-                    cell.appendChild(document.createTextNode(v["Device"].toString()));
-                    //End adding loop
-                    //Start adding loop
-                    console.log(v)
-                    var tbl_row = tbl_body.insertRow();
-                    var cell = tbl_row.insertCell();
-                    cell.append("Disk Size: ")
-                    var cell = tbl_row.insertCell();
-                    cell.appendChild(document.createTextNode(v["Disk size"].toString()));
-                    //Start adding loop
-                    console.log(v)
-                    var tbl_row = tbl_body.insertRow();
-                    var cell = tbl_row.insertCell();
-                    cell.append("Used: ")
-                    var cell = tbl_row.insertCell();
-                    cell.appendChild(document.createTextNode(v["Used"].toString()));
-                    //Start adding loop
-                    console.log(v)
-                    var tbl_row = tbl_body.insertRow();
-                    var cell = tbl_row.insertCell();
-                    cell.append("Free: ")
-                    var cell = tbl_row.insertCell();
-                    cell.appendChild(document.createTextNode(v["Free"].toString()));
-                    //Start adding loop
-                    console.log(v)
-                    var tbl_row = tbl_body.insertRow();
-                    var cell = tbl_row.insertCell();
-                    cell.append("Percent used: ")
-                    var cell = tbl_row.insertCell();
-                    cell.appendChild(document.createTextNode(v["Percent used"].toString()));
-                    //Start adding loop
-                    console.log(v)
-                    var tbl_row = tbl_body.insertRow();
-                    var cell = tbl_row.insertCell();
-                    cell.append("fstype: ")
-                    var cell = tbl_row.insertCell();
-                    cell.appendChild(document.createTextNode(v["fstype"].toString()));
-                    //Start adding loop
-                    console.log(v)
-                    var tbl_row = tbl_body.insertRow();
-                    var cell = tbl_row.insertCell();
-                    cell.append("Mount point: ")
-                    var cell = tbl_row.insertCell();
-                    cell.appendChild(document.createTextNode(v["Mount point"].toString()));
-
-                })
-
-                $("#disk_table").append(tbl_body);
-            });
-        }
-        /**
-        function updateCPUTable() {
-            $("#cpu_table").empty();
-            $.getJSON($SCRIPT_ROOT + "/jstats", function (data) {
-                //console.log(data)
-                var tbl_body = document.createElement("tbody");
-                $.each(data["CPU"], function (k, v) {
-                    //Start adding loop
-                    var tbl_row = tbl_body.insertRow();
-                    var cell = tbl_row.insertCell();
-                    cell.append("CPU %: ")
-                    var cell = tbl_row.insertCell();
-                    cell.appendChild(document.createTextNode(v["CPU Percent"].toString()));
-                    //End adding loop
-                    
-
-                })
-
-                $("#cpu_table").append(tbl_body);
-            })
-            **/
-        function updateCPUTable(points) {
-            $.getJSON($SCRIPT_ROOT + "/jstats", function (data) {
-                console.log(data["CPU"][0]["CPU Percent"])
-                var canvas = document.getElementById("chartContainer");
-                var data = {
-                    labels: ["plswork"],
-                    datasets: [
-                        {
-                            label: "CPU %",
-                            fill: false,
-                            lineTension: 0.1,
-                            backgroundColor: "rgba(75,192,192,0.4)",
-                            borderColor: "rgba(75,192,192,1)",
-                            borderCapStyle: 'butt',
-                            borderDash: [],
-                            borderDashOffset: 0.0,
-                            borderJoinStyle: 'miter',
-                            pointBorderColor: "rgba(75,192,192,1)",
-                            pointBackgroundColor: "#fff",
-                            pointBorderWidth: 1,
-                            pointHoverRadius: 5,
-                            pointHoverBackgroundColor: "rgba(75,192,192,1)",
-                            pointHoverBorderColor: "rgba(220,220,220,1)",
-                            pointHoverBorderWidth: 2,
-                            pointRadius: 5,
-                            pointHitRadius: 10,
-                            data: points,
-                        }
-                    ]
-                };
-
-                var myLineChart = new Chart(canvas, {
-                    type: 'line',
-                    data: data,
-                    
-                });
-
-                
-
-            })
-        }
 
         var cpoints = [];
         updateWinTable();
@@ -207,6 +61,9 @@
                     updateWinTable();
                     updateDiskTable();
                     cpoints.push(data["CPU"][0]["CPU Percent"])
+                    if (cpoints.length >= 11) { //Keeps only 10 points in view of chart.
+                        cpoints.shift()
+                    }
                     console.log("CPOINTS" + cpoints)
                     updateCPUTable(cpoints);
                     //updateCPUTable(cpoints).myLineChart.update();
