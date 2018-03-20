@@ -1,3 +1,5 @@
+
+
 function updateWinTable() {
     $("#window_table").empty();
     $.getJSON($SCRIPT_ROOT + "/jstats", function (data) {
@@ -127,19 +129,26 @@ function updateCPUTable(points) {
                     pointHoverBorderColor: "rgba(220,220,220,1)",
                     
                     data: points,
-                }
-            ]
+                }]
         };
 
         var myLineChart = new Chart(canvas, {
             type: 'line',
             data: data,
-            animation: false,
+            options: {
+                animation: {
+                    duration: 0, // general animation time
+                },
+                hover: {
+                    animationDuration: 0, // duration of animations when hovering an item
+                },
+                responsiveAnimationDuration: 0, // animation duration after a resize
+            }
 
         });
+        myLineChart.update()
 
 
 
     })
 }
-

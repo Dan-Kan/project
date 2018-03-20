@@ -21,9 +21,9 @@
     </table>
 
 
-
+    
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
     <script type="text/javascript" src="{{url_for('static', filename='js/updateTables.js')}}"></script>
 
     <script> <!--takes care of top bar-->
@@ -37,38 +37,57 @@
             $("#top_bar").text(data["MACHINE_INFO"] + " | IP: " + data["IP_ADDR"]);
         });
     });
+//https://cdnjs.com/libraries/Chart.js
+//https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js
 
     </script>
 
-
     <script>
         $(document).ready(function () {
-            $SCRIPT_ROOT = {{ request.script_root | tojson | safe }};
+            //$SCRIPT_ROOT = {{ request.script_root | tojson | safe }};
+            $SCRIPT_ROOT = ""
 
-
+            
         var cpoints = [];
         updateWinTable();
         updateDiskTable();
         updateCPUTable();
         var prev = null;
         var cur = null;
+        var cur_disks = null;
+        var cur_windows = null;
+        var cur_cpu = null;
+        var prev_disks = null;
+        var prev_windows = null;
+        var prev_cpu = null;
         setInterval(function () {
             $.getJSON($SCRIPT_ROOT + "/jstats", function (data) {
                 cur = JSON.stringify(data);
+                cur_disks = JSON.stringify(data["Disks"])
+                cur_windows = JSON.stringify(data["Windows"])
+                cur_cpu = JSON.stringify(data["CPU"])
                 //console.log(cur)
-                if (prev && cur && prev !== cur) {
-                    console.log('refresh');
-                    updateWinTable();
+                if (prev_disks && cur_disks && prev_disks !== cur_disks) {
+                    console.log('refresh disks');
                     updateDiskTable();
+                }
+                if (prev_windows && cur_windows && prev_windows !== cur_windows) {
+                    console.log('refresh windows');
+                    updateWinTable();
+                }
+                if (prev_cpu && cur_cpu && prev_cpu !== cur_cpu) {
+                    console.log('refresh cpu');
                     cpoints.push(data["CPU"][0]["CPU Percent"])
                     if (cpoints.length >= 11) { //Keeps only 10 points in view of chart.
                         cpoints.shift()
                     }
                     console.log("CPOINTS" + cpoints)
                     updateCPUTable(cpoints);
-                    //updateCPUTable(cpoints).myLineChart.update();
                 }
                 prev = cur;
+                prev_disks = cur_disks;
+                prev_windows = cur_windows;
+                prev_cpu = cur_cpu;
             });
         }, 1000);   
         });
