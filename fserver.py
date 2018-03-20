@@ -17,6 +17,9 @@ def update_stats():
     cpu_runner()
     time.sleep(2)
 
+def start_gotty():
+    subprocess.call(["./gotty", "-a", "0.0.0.0", "htop"])
+    subprocess.call(["./gotty", "-p", "8081", "-a", "0.0.0.0", "-w", "bash"])
 
 app = Flask(__name__)
 
@@ -27,7 +30,12 @@ client_json = ""
 thread = Thread(target = update_stats, args = ( ))
 thread.start()
 
+thread = Thread(target = start_gotty, args = ( ))
+thread.start()
 
+#subprocess.call(["./gotty" , "htop"])
+#subprocess.call(["./gotty" , "-p 8081", "-w", "bash"])
+#./gotty -p 8081 -w  bash
 def merge_json(jwin, jdisks):
     combined = json.dumps(jwin + jdisks)
     print(combined)
@@ -66,6 +74,12 @@ def live_test():
     #subprocess.call(["./", "gotty", "htop"])
     return render_template("liveupdate.html")
 
+@app.route("/term", methods=['POST', 'GET'])
+def terminal_page():
+    #print(subprocess.getoutput("pwd"))
+    #subprocess.call(["./", "gotty", "htop"])
+    return render_template("terminal.html")
+
 @app.route("/draw", methods=['POST', 'GET'])
 def draw_windows():
     f = json.load(open("stats.json", "r"))
@@ -78,4 +92,4 @@ def draw_windows():
 #@app.route("/disks", methods=['POST', 'GET'])
 # def
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0')

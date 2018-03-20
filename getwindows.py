@@ -30,7 +30,7 @@ def print_windows(windows):
         machine_name = speclist[4]
         window_name = " ".join(speclist[5:])
         s = {"Window_name": window_name, "X": x, "Y": y, "Width": width, "Height": height}
-        print(s)
+        #print(s)
         ret_list.append(s)
     ret_dict = {"Windows" : ret_list}
     return ret_dict

@@ -1,0 +1,43 @@
+<table id="mega_table">
+    <tr>
+        <td>
+            <div id="top_bar" align="left"></div>
+        </td>
+        <td>
+            <div id="top_bar_ip" align="right"></div>
+        </td>
+        <td>
+            <tr>
+                <iframe src="http://127.0.0.1:8081/" height="500" width="900"></iframe>
+            </tr>
+        </td>
+
+
+        <td>
+            <td>
+                <a href="{{ url_for('live_test', filename='liveupdate.html') }}">TO LIVE</a>
+            </td>
+        </td>
+    </tr>
+
+</table>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $SCRIPT_ROOT = {{ request.script_root | tojson | safe }};
+
+
+    $.getJSON($SCRIPT_ROOT + "/jstats", function (data) {
+        cur = JSON.stringify(data);
+        console.log(data["MACHINE_INFO"])
+        $("#top_bar").text(data["MACHINE_INFO"]);
+        $("#top_bar_ip").text("IP: " + data["IP_ADDR"]);
+    });
+});
+//https://cdnjs.com/libraries/Chart.js
+//https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js
+
+</script>

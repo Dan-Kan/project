@@ -1,10 +1,12 @@
 <body>
+    
     <table id="mega_table">
+        <tr><td><div id="top_bar" align="left"></div></td><td><div id="top_bar_ip" align="right"></div></td></tr>
         <tr>
-            <div id="top_bar"></div>
+            
+            <th>HTOP</th>
             <th>Windows</th>
             <th>Disks</th>
-            <th>HTOP</th>
         </tr>
 
         <td valign="top">
@@ -17,6 +19,7 @@
         <td valign="top">
             <table id="disk_table" border="1"></table>
         </td>
+        <td><a href="{{ url_for('terminal_page', filename='terminal.html') }}">TO TERMINAL</a></td>
         </tr>
     </table>
 
@@ -34,7 +37,8 @@
         $.getJSON($SCRIPT_ROOT + "/jstats", function (data) {
             cur = JSON.stringify(data);
             console.log(data["MACHINE_INFO"])
-            $("#top_bar").text(data["MACHINE_INFO"] + " | IP: " + data["IP_ADDR"]);
+            $("#top_bar").text(data["MACHINE_INFO"]);
+            $("#top_bar_ip").text("IP: " + data["IP_ADDR"]);
         });
     });
 //https://cdnjs.com/libraries/Chart.js
@@ -78,7 +82,7 @@
                 if (prev_cpu && cur_cpu && prev_cpu !== cur_cpu) {
                     console.log('refresh cpu');
                     cpoints.push(data["CPU"][0]["CPU Percent"])
-                    if (cpoints.length >= 11) { //Keeps only 10 points in view of chart.
+                    if (cpoints.length >= 21) { //Keeps only 10 points in view of chart.
                         cpoints.shift()
                     }
                     console.log("CPOINTS" + cpoints)
