@@ -4,6 +4,7 @@ import threading
 from disk_status import disk_runner
 from getwindows import window_runner
 from cpu_stats import cpu_runner
+from ram_status import ram_runner
 import time
 from threading import Thread
 import subprocess
@@ -15,6 +16,7 @@ def update_stats():
     window_runner()
     disk_runner()
     cpu_runner()
+    ram_runner()
     time.sleep(2)
 
 def start_gotty():
@@ -67,6 +69,16 @@ def get_json():
 def ret_json():
     f = json.load(open("stats.json", "r"))
     return jsonify(f)
+
+@app.route("/closewin", methods=['POST', 'GET'])
+def close_win():
+    win_name = request.json["name"];
+    print(win_name)
+    cmd = "wmctrl -c " + win_name
+    print("GOT COMMAND: ", cmd)
+    process = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
+    process.wait()
+    return "test"
 
 @app.route("/live", methods=['POST', 'GET'])
 def live_test():

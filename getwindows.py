@@ -55,6 +55,11 @@ def resize_window(win_name, left, up, width, height):
     process = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
     process.wait()
 
+def close_window(win_name):
+    cmd = "wmctrl -c ", win_name
+    print("GOT COMMAND: ", cmd)
+    process = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
+    process.wait()
 
 windowlist = print_windows(windows)
 print()

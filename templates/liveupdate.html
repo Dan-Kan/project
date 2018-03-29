@@ -11,7 +11,8 @@
 
         <td valign="top">
             <iframe src="http://127.0.0.1:8080/" height="500" width="900"></iframe>
-            <canvas id="chartContainer" style="height: 370px; width:800px;"></canvas>
+            <canvas id="chartContainer" style="height: 100px; width:200px;"></canvas>
+            <canvas id="chartContainerTemps" style="height: 100px; width:200px;"></canvas>
         </td>
         <td valign="top">
             <table id="window_table" border="1"></table>
@@ -53,9 +54,14 @@
 
             
         var cpoints = [];
+        var cputemps0 = [];
+        var cputemps1 = [];
+        var cputemps2 = [];
+        var cputemps3 = [];
         updateWinTable();
         updateDiskTable();
         updateCPUTable();
+        updateCPUTempTable(cputemps0, cputemps1, cputemps2, cputemps3)
         var prev = null;
         var cur = null;
         var cur_disks = null;
@@ -81,12 +87,26 @@
                 }
                 if (prev_cpu && cur_cpu && prev_cpu !== cur_cpu) {
                     console.log('refresh cpu');
-                    cpoints.push(data["CPU"][0]["CPU Percent"])
+                    cpoints.push(data["CPU"]["CPU Percent"])
                     if (cpoints.length >= 21) { //Keeps only 10 points in view of chart.
                         cpoints.shift()
                     }
+                    cputemps0.push(data["CPU"]["Thermals"]["Core 0"])
+                    cputemps1.push(data["CPU"]["Thermals"]["Core 1"])
+                    cputemps2.push(data["CPU"]["Thermals"]["Core 2"])
+                    cputemps3.push(data["CPU"]["Thermals"]["Core 3"])
+                    if (cputemps0.length, cputemps1.length, cputemps2.length, cputemps3.length >= 21) { //Keeps only 10 points in view of chart.
+                        cputemps0.shift()
+                        cputemps1.shift()
+                        cputemps2.shift()
+                        cputemps3.shift()
+                    }
+                    //console.log("CPUTEMPS 0 " + cputemps0)
+                    //console.log("CPUTEMPS 1 " + cputemps1)
+                    //console.log("CPUTEMPS 2 " + cputemps2)
                     console.log("CPOINTS" + cpoints)
                     updateCPUTable(cpoints);
+                    updateCPUTempTable(cputemps0, cputemps1, cputemps2, cputemps3)
                 }
                 prev = cur;
                 prev_disks = cur_disks;
