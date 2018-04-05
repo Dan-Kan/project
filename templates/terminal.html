@@ -8,7 +8,7 @@
         </td>
         <td>
             <tr>
-                <iframe src="http://127.0.0.1:8081/" height="500" width="900"></iframe>
+                <iframe id="term" src="" height="500" width="900"></iframe>
             </tr>
         </td>
 
@@ -29,6 +29,12 @@
     $(document).ready(function () {
         $SCRIPT_ROOT = {{ request.script_root | tojson | safe }};
 
+
+    $.getJSON($SCRIPT_ROOT + "/jconfig", function (data) {
+        console.log(data[0], data[2][2]);
+        console.log("LOCAALPORTS: " + data)
+        $("#term").attr("src", "http://" + data[0]+ ":" + data[2][2]);
+    });
 
     $.getJSON($SCRIPT_ROOT + "/jstats", function (data) {
         cur = JSON.stringify(data);

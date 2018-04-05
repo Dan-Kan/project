@@ -1,4 +1,4 @@
-from flask import Flask, Response, request, render_template, jsonify
+from flask import Flask, Response, request, render_template, jsonify, session, redirect, g, url_for
 import json
 import threading
 from disk_status import disk_runner
@@ -9,99 +9,148 @@ import time
 from threading import Thread
 import subprocess
 from top_bar import info_runner
+import os
+import ssl
+from werkzeug.security import generate_password_hash, check_password_hash
 
 
 def update_stats():
-  while 1:
-    window_runner()
-    disk_runner()
-    cpu_runner()
-    ram_runner()
-    time.sleep(2)
+    while 1:
+        window_runner()
+        disk_runner()
+        cpu_runner()
+        ram_runner()
+        time.sleep(2)
 
-def start_gotty():
-    subprocess.call(["./gotty", "-a", "0.0.0.0", "htop"])
-    subprocess.call(["./gotty", "-p", "8081", "-a", "0.0.0.0", "-w", "bash"])
+
+config = json.load(open("config.json"))
+
+
+def start_gotty_htop():
+    subprocess.call(["./gotty", "-p", "{}".format(config["local ports"]
+                     [1]), "-a", "0.0.0.0", "-c", "{}:{}".format(config["username"], config["password"]), "htop"])
+
+def start_gotty_term():
+    subprocess.call(["./gotty", "-p", "{}".format(config["local ports"]
+                     [2]), "-a", "0.0.0.0", "-w", "-c", "{}:{}".format(config["username"], config["password"]), "bash"])
+
 
 app = Flask(__name__)
+app.secret_key = os.urandom(24)
+
+#context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
+#context.load_cert_chain("myserver.crt", "myserver.key")
 
 info_runner()
 
 client_json = ""
+stats_thread = Thread(target=update_stats, args=())
+stats_thread.start()
 
-thread = Thread(target = update_stats, args = ( ))
-thread.start()
+htop_thread = Thread(target=start_gotty_htop, args=())
+htop_thread.start()
 
-thread = Thread(target = start_gotty, args = ( ))
-thread.start()
+term_thread = Thread(target=start_gotty_term, args=())
+term_thread.start()
 
-#subprocess.call(["./gotty" , "htop"])
-#subprocess.call(["./gotty" , "-p 8081", "-w", "bash"])
-#./gotty -p 8081 -w  bash
-def merge_json(jwin, jdisks):
-    combined = json.dumps(jwin + jdisks)
-    print(combined)
-    return json.dumps(combined)
+# subprocess.call(["./gotty" , "htop"])
+# subprocess.call(["./gotty" , "-p 8081", "-w", "bash"])
+# ./gotty -p 8081 -w  bash
 
 
-@app.route("/", methods=['POST', 'GET'])
-def get_data():
-    print('Recieved from client: {}'.format(request.get_json()))
-    global client_json
-    if(request.get_json() and client_json == ""):
-        client_json = request.get_json()
-    elif(request.get_json()):
-        client_json = merge_json(client_json, request.get_json())
-        print()
-        print()
-        print("client_json: " + client_json)
-    return "<h1>Hi!</h1>"
+@app.route("/", methods=["POST", "GET"])
+def login():
+    if request.method == "POST":
+        session.pop("user", None)
+
+        if request.form["username"] == config["username"]:
+            if request.form["password"] == config["password"]:
+                print("got from form: " + request.form["username"])
+                session["user"] = request.form["username"]
+                return redirect(url_for("live_test"))
+
+    return render_template("login.html")
 
 
-@app.route("/win", methods=['POST', 'GET'])
+@app.route("/win", methods=["POST", "GET"])
 def get_json():
     print("IN /win")
     print()
     f = json.load(open("stats.json", "r"))
     return render_template("windowtable.html", window_list=f)
 
-@app.route("/jstats", methods=['POST', 'GET'])
+
+@app.route("/jstats", methods=["POST", "GET"])
 def ret_json():
-    f = json.load(open("stats.json", "r"))
-    return jsonify(f)
+    if g.user:
+        f = json.load(open("stats.json", "r"))
+        return jsonify(f)
 
-@app.route("/closewin", methods=['POST', 'GET'])
+    return redirect(url_for("login"))
+
+
+@app.route("/jconfig", methods=["POST", "GET"])
+def ret_config_json():
+    if g.user:
+        f = json.load(open("config.json", "r"))
+        return jsonify(f["server"])
+
+    return redirect(url_for("login"))
+
+
+@app.route("/closewin", methods=["POST", "GET"])
 def close_win():
-    win_name = request.json["name"];
-    print(win_name)
-    cmd = "wmctrl -c " + win_name
-    print("GOT COMMAND: ", cmd)
-    process = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
-    process.wait()
-    return "test"
+    if g.user:
+        win_name = request.json["name"]
+        print(win_name)
+        cmd = "wmctrl -c " + win_name
+        print("GOT COMMAND: ", cmd)
+        process = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
+        process.wait()
+        return "test"
+    
+    return redirect(url_for("login"))
 
-@app.route("/live", methods=['POST', 'GET'])
+
+@app.route("/live", methods=["POST", "GET"])
 def live_test():
-    #print(subprocess.getoutput("pwd"))
-    #subprocess.call(["./", "gotty", "htop"])
-    return render_template("liveupdate.html")
+    if g.user:
+        return render_template("liveupdate.html")
 
-@app.route("/term", methods=['POST', 'GET'])
+    return redirect(url_for("login"))
+
+
+@app.before_request
+def before_request():
+    g.user = None
+    if "user" in session:
+        g.user = session["user"]
+
+
+@app.route("/term", methods=["POST", "GET"])
 def terminal_page():
-    #print(subprocess.getoutput("pwd"))
-    #subprocess.call(["./", "gotty", "htop"])
-    return render_template("terminal.html")
+    if g.user:
+        return render_template("terminal.html")
 
-@app.route("/draw", methods=['POST', 'GET'])
+    return redirect(url_for("login"))
+
+
+@app.route("/draw", methods=["POST", "GET"])
 def draw_windows():
     f = json.load(open("stats.json", "r"))
     return render_template("drawin.html", window_list=f)
 
 
+@app.route("/logout")
+def dropsession():
+    session.pop("user", None)
+    print("Dropped!")
+    return redirect(url_for("login"))
 
 
 
-#@app.route("/disks", methods=['POST', 'GET'])
+#@app.route("/disks", methods=["POST", "GET"])
 # def
-if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0')
+if __name__ == "__main__":
+    app.run(debug=False, host="0.0.0.0", port=config["local ports"][0])
+    # ssl_context=context

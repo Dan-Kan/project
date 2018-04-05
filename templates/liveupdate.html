@@ -1,3 +1,10 @@
+<html>
+<head>
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/rambar.css') }}">
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/tables.css') }}">
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet"> 
+</head>
+
 <body>
     
     <table id="mega_table">
@@ -10,18 +17,36 @@
         </tr>
 
         <td valign="top">
-            <iframe src="http://127.0.0.1:8080/" height="500" width="900"></iframe>
-            <canvas id="chartContainer" style="height: 100px; width:200px;"></canvas>
-            <canvas id="chartContainerTemps" style="height: 100px; width:200px;"></canvas>
+            <iframe id="htop" src="" height="500" width="900"></iframe>
+            <canvas id="chartContainer" class="chart"></canvas>
+            <!--<canvas id="chartContainerTemps" style="height: 100px; width:200px;"></canvas> -->
         </td>
         <td valign="top">
-            <table id="window_table" border="1"></table>
+            <table id="window_table" class="win_table"></table>
         </td>
         <td valign="top">
-            <table id="disk_table" border="1"></table>
+            <table id="disk_table" class="win_table"></table>
+            <br>
+            <table id="ram_container" class="ram_container" border="1">
+                <tr>
+                    <th>RAM</th>
+                </tr>
+                <tr>
+                    <td><div id="ramProgress" class="ram">
+                        <div id="ramBar"></div>
+                    </div>
+                </td>
+                </tr>
+                <tr id="ram_test">
+                    
+                </tr>
+            </table>
+            
         </td>
         <td><a href="{{ url_for('terminal_page', filename='terminal.html') }}">TO TERMINAL</a></td>
+        <td><a href="{{ url_for('dropsession')}}">LOG OUT</a></td>
         </tr>
+        
     </table>
 
 
@@ -34,6 +59,11 @@
         $(document).ready(function () {
             $SCRIPT_ROOT = {{ request.script_root | tojson | safe }};
 
+            $.getJSON($SCRIPT_ROOT + "/jconfig", function (data) {
+            console.log(data[0], data[2][1]);
+            console.log("LOCAALPORTS: " + data)
+            $("#htop").attr("src", "http://" + data[0]+ ":" + data[2][1]);
+        });
 
         $.getJSON($SCRIPT_ROOT + "/jstats", function (data) {
             cur = JSON.stringify(data);
@@ -41,7 +71,15 @@
             $("#top_bar").text(data["MACHINE_INFO"]);
             $("#top_bar_ip").text("IP: " + data["IP_ADDR"]);
         });
+        $.getJSON($SCRIPT_ROOT + "/jstats", function (data) {
+            var row = document.createElement("TR");
+            var cell = row.insertCell();
+            cell.append("Total: ")
+            var cell = row.insertCell();
+            cell.appendChild(document.createTextNode(data["RAM"]["total"].toString()));
+            $("#ram_test").append(cell);
     });
+});
 //https://cdnjs.com/libraries/Chart.js
 //https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js
 
@@ -51,8 +89,12 @@
         $(document).ready(function () {
             //$SCRIPT_ROOT = {{ request.script_root | tojson | safe }};
             $SCRIPT_ROOT = ""
-
-            
+        
+        $.getJSON($SCRIPT_ROOT + "/jstats", function (data) {
+            var barTest = document.getElementById("ramProgress");
+            //barTest.innerHTML = "TEST";
+        });
+        
         var cpoints = [];
         var cputemps0 = [];
         var cputemps1 = [];
@@ -61,21 +103,25 @@
         updateWinTable();
         updateDiskTable();
         updateCPUTable();
-        updateCPUTempTable(cputemps0, cputemps1, cputemps2, cputemps3)
+        ramBar();
+        //updateCPUTempTable(cputemps0, cputemps1, cputemps2, cputemps3)
         var prev = null;
         var cur = null;
         var cur_disks = null;
         var cur_windows = null;
         var cur_cpu = null;
+        var cur_ram = null;
         var prev_disks = null;
         var prev_windows = null;
         var prev_cpu = null;
+        var prev_ram = null;
         setInterval(function () {
             $.getJSON($SCRIPT_ROOT + "/jstats", function (data) {
                 cur = JSON.stringify(data);
                 cur_disks = JSON.stringify(data["Disks"])
                 cur_windows = JSON.stringify(data["Windows"])
                 cur_cpu = JSON.stringify(data["CPU"])
+                cur_ram = JSON.stringify(data["RAM"])
                 //console.log(cur)
                 if (prev_disks && cur_disks && prev_disks !== cur_disks) {
                     console.log('refresh disks');
@@ -106,12 +152,18 @@
                     //console.log("CPUTEMPS 2 " + cputemps2)
                     console.log("CPOINTS" + cpoints)
                     updateCPUTable(cpoints);
-                    updateCPUTempTable(cputemps0, cputemps1, cputemps2, cputemps3)
+                    //updateCPUTempTable(cputemps0, cputemps1, cputemps2, cputemps3)
+                }
+                if (prev_ram && cur_ram && prev_ram !== cur_ram) {
+                    console.log('refresh RAM');
+                    console.log("SENT PERCENT: " + data["RAM"]["percent"])
+                    ramBar(data["RAM"]["percent"], data["RAM"]["used"], data["RAM"]["free"]);
                 }
                 prev = cur;
                 prev_disks = cur_disks;
                 prev_windows = cur_windows;
                 prev_cpu = cur_cpu;
+                prev_ram = cur_ram;
             });
         }, 1000);   
         });
@@ -119,3 +171,4 @@
     </script>
 
 </body>
+</html>

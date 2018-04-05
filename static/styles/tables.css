@@ -1,0 +1,48 @@
+body {
+    background-color: rgb(149, 165, 166);
+    font-family: roboto;
+    font-family: 'Roboto', sans-serif;
+    min-height: 100%;
+    min-width: 100%;
+}
+
+html {
+    top:0px;
+    bottom:0px;
+    left:0px;
+    right:0px;
+}
+
+.win_table {
+    background-color: rgb(108, 122, 137);
+    border-collapse: collapse;
+    border-radius: 6px;
+    -moz-border-radius: 6px;
+    
+}
+
+.win_table th {
+    text-align: left;
+    border-bottom: 1px solid rgb(0, 0, 0);
+    /* border-right: 1px solid #000; */
+}
+
+/*
+.win_table td {
+    text-align: left;
+    border-bottom: 1px solid rgb(0, 0, 0);
+    border-right: 1px solid #000;
+}
+*/
+
+.win_name {
+    border-top: 1px solid #000;
+}
+
+.ram_container {
+    background-color: rgb(108, 122, 137);
+    height: 100%;
+    width: 100%;
+}
+.win_table tr:hover {background-color: rgb(149, 165, 166)}
+
