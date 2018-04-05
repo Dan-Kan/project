@@ -27,7 +27,8 @@ def print_windows(windows):
         y = speclist[1]
         width = speclist[2]
         height = speclist[3]
-        machine_name = speclist[4]
+        #machine_name = speclist[4]
+        #print("MACHINE NAME ", machine_name)
         window_name = " ".join(speclist[5:])
         s = {"Window_name": window_name, "X": x, "Y": y, "Width": width, "Height": height}
         #print(s)

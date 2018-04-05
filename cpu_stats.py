@@ -29,7 +29,7 @@ def get_cpu_termals():
 
 def cpu_runner():
     dict = get_cpu_percent()
-    if get_cpu_percent() not None:
+    if get_cpu_percent() is not None:
         dict["CPU"]["Thermals"] = get_cpu_termals()
     else:
         dict["CPU"]["Thermals"] = "Can't get temps"
