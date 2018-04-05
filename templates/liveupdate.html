@@ -137,7 +137,7 @@
                     if (cpoints.length >= 21) { //Keeps only 10 points in view of chart.
                         cpoints.shift()
                     }
-                    if (data["CPU"]["Thermals"] != "Can't get temps")
+                    if (data["CPU"]["Thermals"] != null) {
                         cputemps0.push(data["CPU"]["Thermals"]["Core 0"])
                         cputemps1.push(data["CPU"]["Thermals"]["Core 1"])
                         cputemps2.push(data["CPU"]["Thermals"]["Core 2"])
@@ -148,6 +148,7 @@
                             cputemps2.shift()
                             cputemps3.shift()
                         }
+                    }
                     //console.log("CPUTEMPS 0 " + cputemps0)
                     //console.log("CPUTEMPS 1 " + cputemps1)
                     //console.log("CPUTEMPS 2 " + cputemps2)
