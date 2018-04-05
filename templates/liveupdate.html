@@ -137,16 +137,17 @@
                     if (cpoints.length >= 21) { //Keeps only 10 points in view of chart.
                         cpoints.shift()
                     }
-                    cputemps0.push(data["CPU"]["Thermals"]["Core 0"])
-                    cputemps1.push(data["CPU"]["Thermals"]["Core 1"])
-                    cputemps2.push(data["CPU"]["Thermals"]["Core 2"])
-                    cputemps3.push(data["CPU"]["Thermals"]["Core 3"])
-                    if (cputemps0.length, cputemps1.length, cputemps2.length, cputemps3.length >= 21) { //Keeps only 10 points in view of chart.
-                        cputemps0.shift()
-                        cputemps1.shift()
-                        cputemps2.shift()
-                        cputemps3.shift()
-                    }
+                    if (data["CPU"]["Thermals"] != "Can't get temps")
+                        cputemps0.push(data["CPU"]["Thermals"]["Core 0"])
+                        cputemps1.push(data["CPU"]["Thermals"]["Core 1"])
+                        cputemps2.push(data["CPU"]["Thermals"]["Core 2"])
+                        cputemps3.push(data["CPU"]["Thermals"]["Core 3"])
+                        if (cputemps0.length, cputemps1.length, cputemps2.length, cputemps3.length >= 21) { //Keeps only 10 points in view of chart.
+                            cputemps0.shift()
+                            cputemps1.shift()
+                            cputemps2.shift()
+                            cputemps3.shift()
+                        }
                     //console.log("CPUTEMPS 0 " + cputemps0)
                     //console.log("CPUTEMPS 1 " + cputemps1)
                     //console.log("CPUTEMPS 2 " + cputemps2)

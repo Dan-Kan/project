@@ -15,9 +15,11 @@ def get_cpu_termals():
     ret_list = []
     # acpitz = Temperature sensor near/on CPU socket. This sensor can be unreliable. NOT USING IT.
     if not hasattr(psutil, "sensors_temperatures"):
+        return None
         sys.exit("platform not supported")
     temps = psutil.sensors_temperatures()["coretemp"]
     if not temps:
+        return None
         sys.exit("can't read any temperature")
         # print(name)
     for entry in temps:
@@ -27,7 +29,10 @@ def get_cpu_termals():
 
 def cpu_runner():
     dict = get_cpu_percent()
-    dict["CPU"]["Thermals"] = get_cpu_termals()
+    if get_cpu_percent() not None:
+        dict["CPU"]["Thermals"] = get_cpu_termals()
+    else:
+        dict["CPU"]["Thermals"] = "Can't get temps"
     with open("stats.json", "r+") as f:
         systats = json.load(f)
         # update json here

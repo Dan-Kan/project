@@ -197,3 +197,4 @@ while 1:
 # In order to verify that everything is closed run netstat -tulpn and check for gotty/python/etc...
 
 # https://unix.stackexchange.com/questions/46235/how-does-reverse-ssh-tunneling-work
+# https://unix.stackexchange.com/questions/3886/difference-between-nohup-disown-and
