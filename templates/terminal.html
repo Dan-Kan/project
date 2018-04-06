@@ -1,3 +1,11 @@
+<html>
+
+<head>
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/terminal.css') }}">
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet"> 
+</head>
+
+<body>
 <table id="mega_table">
     <tr>
         <td>
@@ -6,13 +14,11 @@
         <td>
             <div id="top_bar_ip" align="right"></div>
         </td>
+    </tr>
+    <tr>
         <td>
-            <tr>
-                <iframe id="term" src="" height="500" width="900"></iframe>
-            </tr>
+            <iframe id="term" src="" height="750" width="1500"></iframe>
         </td>
-
-
         <td>
             <td>
                 <a href="{{ url_for('live_test', filename='liveupdate.html') }}">TO LIVE</a>
@@ -22,6 +28,7 @@
 
 </table>
 
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
 
@@ -30,20 +37,22 @@
         $SCRIPT_ROOT = {{ request.script_root | tojson | safe }};
 
 
-    $.getJSON($SCRIPT_ROOT + "/jconfig", function (data) {
-        console.log(data[0], data[2][2]);
-        console.log("LOCAALPORTS: " + data)
-        $("#term").attr("src", "http://" + data[0]+ ":" + data[2][2]);
-    });
+        $.getJSON($SCRIPT_ROOT + "/jconfig", function (data) {
+            console.log(data[0], data[2][2]);
+            console.log("LOCAALPORTS: " + data)
+            $("#term").attr("src", "http://" + data[0] + ":" + data[2][2]);
+        });
 
-    $.getJSON($SCRIPT_ROOT + "/jstats", function (data) {
-        cur = JSON.stringify(data);
-        console.log(data["MACHINE_INFO"])
-        $("#top_bar").text(data["MACHINE_INFO"]);
-        $("#top_bar_ip").text("IP: " + data["IP_ADDR"]);
+        $.getJSON($SCRIPT_ROOT + "/jstats", function (data) {
+            cur = JSON.stringify(data);
+            console.log(data["MACHINE_INFO"])
+            $("#top_bar").text(data["MACHINE_INFO"]);
+            $("#top_bar_ip").text("IP: " + data["IP_ADDR"]);
+        });
     });
-});
-//https://cdnjs.com/libraries/Chart.js
-//https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js
+            //https://cdnjs.com/libraries/Chart.js
+            //https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js
 
 </script>
+</body>
+</html>
