@@ -44,7 +44,7 @@
             
         </td>
         <td><a href="{{ url_for('terminal_page', filename='terminal.html') }}">TO TERMINAL</a></td>
-        <td><a href="{{ url_for('dropsession')}}">LOG OUT</a></td>
+        <td><a href="{{ url_for('drop_session')}}">LOG OUT</a></td>
         </tr>
         
     </table>
@@ -134,7 +134,7 @@
                 if (prev_cpu && cur_cpu && prev_cpu !== cur_cpu) {
                     console.log('refresh cpu');
                     cpoints.push(data["CPU"]["CPU Percent"])
-                    if (cpoints.length >= 21) { //Keeps only 10 points in view of chart.
+                    if (cpoints.length >= 21) { //Keeps only 20 points in view of chart.
                         cpoints.shift()
                     }
                     if (data["CPU"]["Thermals"] != null) {
@@ -142,7 +142,7 @@
                         cputemps1.push(data["CPU"]["Thermals"]["Core 1"])
                         cputemps2.push(data["CPU"]["Thermals"]["Core 2"])
                         cputemps3.push(data["CPU"]["Thermals"]["Core 3"])
-                        if (cputemps0.length, cputemps1.length, cputemps2.length, cputemps3.length >= 21) { //Keeps only 10 points in view of chart.
+                        if (cputemps0.length, cputemps1.length, cputemps2.length, cputemps3.length >= 21) { //Keeps only 20 points in view of chart.
                             cputemps0.shift()
                             cputemps1.shift()
                             cputemps2.shift()

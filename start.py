@@ -1,9 +1,7 @@
 import socket
-import pickle
 import subprocess
 from contextlib import closing
 import subprocess
-from werkzeug.security import generate_password_hash, check_password_hash
 import json
 
 
@@ -41,37 +39,6 @@ with open("config.json", "r+") as f:
     f.seek(0)
     f.truncate()
     json.dump(config, f)
-
-
-'''
-flask_port = 5000
-htop_port = 80
-terminal_port = 8081
-
-# connection to hostname on the port.
-s.connect(("45.77.226.82", 8888))
-# s.send(ports)
-# Receive no more than 1024 bytes
-free_ports = s.recv(4096)
-print(pickle.loads(free_ports))
-ports = pickle.loads(free_ports)
-s.close()
-
-# Pickle turns list to bytes so that it can be sent to server
-ports = pickle.dumps([5000, 68, 8081])
-'''
-
-
-class User(object):
-    def __init__(self, username, password):
-        self.username = username
-        self.set_password(password)
-
-    def set_password(self, password):
-        self.pw_hash = generate_password_hash(password)
-
-    def check_password(self, password):
-        return check_password_hash(self.pw_hash, password)
 
 
 print("---------------------------")
@@ -164,7 +131,13 @@ while 1:
 
         print("start server")
         try:
-            subprocess.call(["nohup", "python3", "fserver.py", "&", "diswon"])
+            run_mode = input("Start in debug mode? (Not recommened, will use extra space on hard drive!) y/n ")
+            if run_mode.lower() == "y":
+                print("Debug mode selected, see nohup.out for logs")
+                subprocess.call(["nohup", "python3", "fserver.py", "&", "diswon"])
+            if run_mode.lower() == "n":
+                print("NO")
+                subprocess.call(["nohup", "python3", "fserver.py", ">/dev/null 2>&1", "&", "diswon"])
             print()
             print("Server should now be set up, thanks!")
             break
@@ -176,7 +149,8 @@ while 1:
             if configure_ssh_tunnel() == 255:
                 print("FAILED TO ESTABLISH TUNNEL, EXITING")
             else:
-                subprocess.call(["nohup", "python3", "fserver.py", "&", "diswon"])
+                subprocess.call(
+                    ["nohup", "python3", "fserver.py", "&", "diswon"])
                 print()
                 print("Server should now be set up, thanks!")
                 break
@@ -187,6 +161,8 @@ while 1:
         print("Invalid input!")
         continue
 
+
+# >/dev/null 2>&1 doesn't create nohup.out
 
 # To kill server and all thats related to it:
 # ps aux | grep ssh

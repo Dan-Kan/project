@@ -28,7 +28,7 @@ config = json.load(open("config.json"))
 
 def start_gotty_htop():
     subprocess.call(["./gotty", "-p", "{}".format(config["local ports"]
-                     [1]), "-a", "0.0.0.0", "-c", "{}:{}".format(config["username"], config["password"]), "htop"])
+                     [1]), "-a", "0.0.0.0", "-w", "-c", "{}:{}".format(config["username"], config["password"]), "htop"])
 
 def start_gotty_term():
     subprocess.call(["./gotty", "-p", "{}".format(config["local ports"]
@@ -103,7 +103,7 @@ def close_win():
     if g.user:
         win_name = request.json["name"]
         print(win_name)
-        cmd = "wmctrl -c " + win_name
+        cmd = "wmctrl -c " + "'" + win_name + "'"
         print("GOT COMMAND: ", cmd)
         process = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
         process.wait()
@@ -142,7 +142,7 @@ def draw_windows():
 
 
 @app.route("/logout")
-def dropsession():
+def drop_session():
     session.pop("user", None)
     print("Dropped!")
     return redirect(url_for("login"))
