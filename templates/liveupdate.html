@@ -8,7 +8,7 @@
 <body>
     
     <table id="mega_table">
-        <tr><td><div id="top_bar" align="left"></div></td><td><div id="top_bar_ip" align="right"></div></td></tr>
+        <tr><td><div id="top_bar" align="left"></div></td><td><div id="top_bar_ip" align="right"></div></td><td align="right"><a href="{{ url_for('terminal_page', filename='terminal.html') }}" style="padding-right: 15%;">TERMINAL</a><a href="{{ url_for('drop_session')}}">LOG OUT</a></td></tr>
         <tr>
             
             <th>HTOP</th>
@@ -43,8 +43,9 @@
             </table>
             
         </td>
-        <td><a href="{{ url_for('terminal_page', filename='terminal.html') }}">TO TERMINAL</a></td>
-        <td><a href="{{ url_for('drop_session')}}">LOG OUT</a></td>
+        
+        <!-- <td><tr><a href="{{ url_for('terminal_page', filename='terminal.html') }}">TO TERMINAL</a></tr><tr><a href="{{ url_for('drop_session')}}">LOG OUT</a></tr></td> -->
+        <!-- <td><a href="{{ url_for('drop_session')}}">LOG OUT</a></td> -->
         </tr>
         
     </table>
