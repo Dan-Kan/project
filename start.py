@@ -128,16 +128,21 @@ while 1:
             f.seek(0)
             f.truncate()
             json.dump(config, f)
-
+        running_str = config["server"][0] + ":" + str(config["local ports"][0])
+        access_str = config["server"][0] + ":" + str(config["server"][2][0])
         print("start server")
         try:
             run_mode = input("Start in debug mode? (Not recommened, will use extra space on hard drive!) y/n ")
             if run_mode.lower() == "y":
                 print("Debug mode selected, see nohup.out for logs")
+                print("Server running on: ", running_str)
                 subprocess.call(["nohup", "python3", "fserver.py", "&", "diswon"])
             if run_mode.lower() == "n":
                 print("NO")
+                print("Server running on: ", running_str)
+                print("NOTE: Deleting nohup.out is recommended")
                 subprocess.call(["nohup", "python3", "fserver.py", ">/dev/null 2>&1", "&", "diswon"])
+                
             print()
             print("Server should now be set up, thanks!")
             break
@@ -149,10 +154,15 @@ while 1:
             if configure_ssh_tunnel() == 255:
                 print("FAILED TO ESTABLISH TUNNEL, EXITING")
             else:
+                running_str = "0.0.0.0:" + str(config["local ports"][0])
+                access_str = config["server"][0] + ":" + str(config["server"][2][0])
+                print("Server running on: ", running_str)
+                print("Server accessible via: ", access_str)
+                print("Server should now be set up, thanks! You may close this window.")
+                print("NOTE: Deleting nohup.out is recommended")
                 subprocess.call(
                     ["nohup", "python3", "fserver.py", "&", "diswon"])
                 print()
-                print("Server should now be set up, thanks!")
                 break
         except OSError as e:
             print("Execution failed: ", e)

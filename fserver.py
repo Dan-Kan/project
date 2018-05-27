@@ -14,7 +14,7 @@ import ssl
 from werkzeug.security import generate_password_hash, check_password_hash
 
 
-def update_stats():
+def update_stats(): #Stats collection - runs in different thread
     while 1:
         window_runner()
         disk_runner()
@@ -57,7 +57,7 @@ term_thread.start()
 # subprocess.call(["./gotty" , "-p 8081", "-w", "bash"])
 # ./gotty -p 8081 -w  bash
 
-
+#Login
 @app.route("/", methods=["POST", "GET"])
 def login():
     if request.method == "POST":
@@ -72,14 +72,7 @@ def login():
     return render_template("login.html")
 
 
-@app.route("/win", methods=["POST", "GET"])
-def get_json():
-    print("IN /win")
-    print()
-    f = json.load(open("stats.json", "r"))
-    return render_template("windowtable.html", window_list=f)
-
-
+#ret stats.json
 @app.route("/jstats", methods=["POST", "GET"])
 def ret_json():
     if g.user:
@@ -88,7 +81,7 @@ def ret_json():
 
     return redirect(url_for("login"))
 
-
+#ret config.json
 @app.route("/jconfig", methods=["POST", "GET"])
 def ret_config_json():
     if g.user:
@@ -97,7 +90,7 @@ def ret_config_json():
 
     return redirect(url_for("login"))
 
-
+#runs close window command on server
 @app.route("/closewin", methods=["POST", "GET"])
 def close_win():
     if g.user:
@@ -111,7 +104,7 @@ def close_win():
     
     return redirect(url_for("login"))
 
-
+#serves liveupdate.html
 @app.route("/live", methods=["POST", "GET"])
 def live_test():
     if g.user:
@@ -119,14 +112,14 @@ def live_test():
 
     return redirect(url_for("login"))
 
-
+#checks that the user is logged in before each request to server
 @app.before_request
 def before_request():
     g.user = None
     if "user" in session:
         g.user = session["user"]
 
-
+#serves terminal.html
 @app.route("/term", methods=["POST", "GET"])
 def terminal_page():
     if g.user:
@@ -135,12 +128,12 @@ def terminal_page():
     return redirect(url_for("login"))
 
 
-@app.route("/draw", methods=["POST", "GET"])
-def draw_windows():
-    f = json.load(open("stats.json", "r"))
-    return render_template("drawin.html", window_list=f)
+# @app.route("/draw", methods=["POST", "GET"])
+# def draw_windows():
+#    f = json.load(open("stats.json", "r"))
+#    return render_template("drawin.html", window_list=f)
 
-
+#logout
 @app.route("/logout")
 def drop_session():
     session.pop("user", None)
@@ -151,6 +144,7 @@ def drop_session():
 
 #@app.route("/disks", methods=["POST", "GET"])
 # def
+#start server
 if __name__ == "__main__":
-    app.run(debug=False, host="0.0.0.0", port=config["local ports"][0])
+    app.run(debug=True, host="0.0.0.0", port=config["local ports"][0])
     # ssl_context=context

@@ -6,7 +6,7 @@
 
 var placeholderCellCss = "border: none;";
 
-function closeWindow(winName) {
+function closeWindow(winName) { //Send request to server that runs close_win()
     console.log("CLOSED " + winName);
     jQuery.ajax({
         type: "POST",
@@ -21,7 +21,7 @@ function closeWindow(winName) {
     })
 }
 
-function updateWinTable() {
+function updateWinTable() { //Draws and updates window table
     $("#window_table").empty();
     $.getJSON($SCRIPT_ROOT + "/jstats", function (data) {
         console.log(data["Windows"])
@@ -99,7 +99,7 @@ function updateWinTable() {
         $("#window_table").append(tbl_body);
     });
 }
-function updateDiskTable() {
+function updateDiskTable() { //Draws and updates disk table
     $("#disk_table").empty();
     $.getJSON($SCRIPT_ROOT + "/jstats", function (data) {
         //console.log(data)
@@ -171,7 +171,7 @@ function updateDiskTable() {
     });
 }
 
-function updateCPUTable(points) {
+function updateCPUTable(points) { //Draws and updates CPU graph
     $.getJSON($SCRIPT_ROOT + "/jstats", function (data) {
         //console.log(data["CPU"][0]["CPU Percent"])
         console.log("POINTS: " + points)
@@ -350,7 +350,7 @@ function updateCPUTempTable(points0, points1, points2, points3) {
 }
 */
 
-function ramBar(ramPercent, ramUsed, ramFree) {
+function ramBar(ramPercent, ramUsed, ramFree) { //Draws and updates ram bar
     console.log("TYPE: " + typeof ramPercent + " , CONTENTS: " + ramPercent);
     var bar = document.getElementById("ramBar");
     var width = 0; //Shows progress
